@@ -26,7 +26,7 @@ public class CategoryService {
     public CategoryDTO getCategoryById(Long id) {
         return categoryRepository.findById(id)
                 .map(categoryMapper::toDTO)
-                .orElseThrow(() -> new RuntimeException("Категория не найдена"));
+                .orElseThrow(() -> new RuntimeException("Category not found"));
     }
 
     public CategoryDTO createCategory(CategoryDTO categoryDTO) {
@@ -37,7 +37,7 @@ public class CategoryService {
 
     public CategoryDTO updateCategory(Long id, CategoryDTO categoryDTO) {
         Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Категория не найдена"));
+                .orElseThrow(() -> new RuntimeException("Category not found"));
 
         category.setName(categoryDTO.getName());
         category.setDescription(categoryDTO.getDescription());
