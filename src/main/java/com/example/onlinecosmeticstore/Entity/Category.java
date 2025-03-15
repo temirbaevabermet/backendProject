@@ -2,7 +2,7 @@ package com.example.onlinecosmeticstore.Entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-
+import lombok.Builder;
 import java.util.Set;
 
 @Entity

@@ -12,6 +12,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.Builder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -34,7 +35,6 @@ public class InitData {
 
     @PostConstruct
     public void init() {
-        log.warn("Initializing data...");
 
         // Создание категорий
         Category makeup = Category.builder().name("Makeup").description("Beauty products").build();
@@ -76,7 +76,6 @@ public class InitData {
 
         orderRepository.save(order1);
 
-        log.warn("Data initialization completed.");
     }
 
     @PreDestroy
@@ -84,7 +83,7 @@ public class InitData {
         log.warn("Destroying data...");
     }
 
-    @Value("${my.value}")
+    @Value("${my.value:default_value}")
     public InitData setMyProperty(String myProperty) {
         log.warn("Setting myProperty={}", myProperty);
         this.myProperty = myProperty;
