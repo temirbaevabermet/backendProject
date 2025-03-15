@@ -1,5 +1,6 @@
 package com.example.onlinecosmeticstore.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.Builder;
@@ -22,5 +23,6 @@ public class Category {
     private String description;
 
     @OneToMany(mappedBy = "category")
+    @JsonIgnore
     private Set<Product> products;
 }
