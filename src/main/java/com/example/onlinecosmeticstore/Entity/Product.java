@@ -1,5 +1,6 @@
 package com.example.OnlineCosmeticStore.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
@@ -30,5 +31,6 @@ public class Product {
     private Supplier supplier;
 
     @ManyToMany(mappedBy = "products")
+    @JsonIgnore
     private Set<Order> orders;
 }
