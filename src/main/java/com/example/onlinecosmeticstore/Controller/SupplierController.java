@@ -4,6 +4,7 @@ import com.example.OnlineCosmeticStore.Service.SupplierService;
 import com.example.OnlineCosmeticStore.dto.SupplierDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,13 +31,15 @@ public class SupplierController {
 
     // Create a new supplier
     @PostMapping
-    public SupplierDTO createSupplier(@RequestBody SupplierDTO supplierDTO) {
-        return supplierService.createSupplier(supplierDTO);
+    public ResponseEntity<SupplierDTO> createSupplier(@RequestBody SupplierDTO supplierDTO) {
+        SupplierDTO createdSupplier = supplierService.createSupplier(supplierDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdSupplier);
     }
 
     // Delete a supplier by ID
     @DeleteMapping("/{id}")
-    public void deleteSupplier(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteSupplier(@PathVariable Long id) {
         supplierService.deleteSupplier(id);
+        return ResponseEntity.noContent().build();
     }
 }
