@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -31,5 +32,6 @@ public class Order {
             inverseJoinColumns = @JoinColumn(name = "product_id")
     )
     @JsonIgnore
-    private Set<Product> products;
+    private Set<Product> products = new HashSet<>();
+
 }

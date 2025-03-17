@@ -1,8 +1,6 @@
 package com.example.OnlineCosmeticStore.Repository;
 
 import com.example.OnlineCosmeticStore.Entity.Order;
-import com.example.OnlineCosmeticStore.Entity.Product;
-import com.example.OnlineCosmeticStore.Entity.Supplier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,22 +42,20 @@ public class OrderRepositoryTest {
 
     @Test
     void testFindByStatus() {
-        // Выполняем поиск по статусу "PENDING"
+
         List<Order> pendingOrders = orderRepository.findByStatus("PENDING");
 
-        // Проверяем, что количество найденных заказов соответствует ожиданиям
+
         assertEquals(2, pendingOrders.size(), "Should return 2 orders with status 'PENDING'");
 
-        // Проверяем, что все найденные заказы имеют статус "PENDING"
+
         pendingOrders.forEach(order -> assertEquals("PENDING", order.getStatus()));
     }
 
     @Test
     void testFindByStatusEmpty() {
-        // Выполняем поиск по статусу, которого нет
         List<Order> completedOrders = orderRepository.findByStatus("CANCELLED");
 
-        // Проверяем, что результат пустой
         assertEquals(0, completedOrders.size(), "Should return no orders with status 'CANCELLED'");
     }
 }
