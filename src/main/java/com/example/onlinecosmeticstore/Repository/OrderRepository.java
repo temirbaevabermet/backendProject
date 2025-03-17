@@ -1,6 +1,6 @@
-package com.example.onlinecosmeticstore.Repository;
+package com.example.OnlineCosmeticStore.Repository;
 
-import com.example.onlinecosmeticstore.Entity.Order;
+import com.example.OnlineCosmeticStore.Entity.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

@@ -1,20 +1,26 @@
-package com.example.onlinecosmeticstore.mapper;
+package com.example.OnlineCosmeticStore.mapper;
 
-import com.example.onlinecosmeticstore.dto.ProductDTO;
-import com.example.onlinecosmeticstore.Entity.Product;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
+import com.example.OnlineCosmeticStore.dto.ProductDTO;
+import com.example.OnlineCosmeticStore.Entity.Product;
 
-@Mapper
-public interface ProductMapper {
-    ProductMapper INSTANCE = Mappers.getMapper(ProductMapper.class);
+public class ProductMapper {
+    public static ProductDTO toDto(Product product) {
+        ProductDTO dto = new ProductDTO();
+        dto.setId(product.getId());
+        dto.setName(product.getName());
+        dto.setDescription(product.getDescription());
+        dto.setPrice(product.getPrice());
+        dto.setCategoryId(product.getCategory().getId());
+        dto.setSupplierId(product.getSupplier().getId());
+        return dto;
+    }
 
-    @Mapping(source = "category.id", target = "categoryId")
-    @Mapping(source = "supplier.id", target = "supplierId")
-    ProductDTO toDTO(Product product);
-
-    @Mapping(source = "categoryId", target = "category")
-    @Mapping(source = "supplierId", target = "supplier")
-    Product toEntity(ProductDTO productDTO);
+    public static Product toEntity(ProductDTO dto) {
+        Product product = new Product();
+        product.setId(dto.getId());
+        product.setName(dto.getName());
+        product.setDescription(dto.getDescription());
+        product.setPrice(dto.getPrice());
+        return product;
+    }
 }

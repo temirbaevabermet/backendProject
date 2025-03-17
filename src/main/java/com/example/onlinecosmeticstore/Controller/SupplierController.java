@@ -1,42 +1,42 @@
-package com.example.onlinecosmeticstore.Controller;
+package com.example.OnlineCosmeticStore.Controller;
 
-import com.example.onlinecosmeticstore.Service.SupplierService;
-import com.example.onlinecosmeticstore.dto.SupplierDTO;
+import com.example.OnlineCosmeticStore.Service.SupplierService;
+import com.example.OnlineCosmeticStore.dto.SupplierDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/suppliers")
-@RequiredArgsConstructor
+@RequestMapping("/api/suppliers")
 public class SupplierController {
-    private final SupplierService supplierService;
 
+    @Autowired
+    private SupplierService supplierService;
+
+    // Get all suppliers
     @GetMapping
     public List<SupplierDTO> getAllSuppliers() {
         return supplierService.getAllSuppliers();
     }
 
+    // Get a supplier by ID
     @GetMapping("/{id}")
-    public ResponseEntity<SupplierDTO> getSupplierById(@PathVariable Long id) {
-        return ResponseEntity.ok(supplierService.getSupplierById(id));
+    public SupplierDTO getSupplier(@PathVariable Long id) {
+        return supplierService.getSupplierById(id);
     }
 
+    // Create a new supplier
     @PostMapping
-    public ResponseEntity<SupplierDTO> createSupplier(@RequestBody SupplierDTO supplierDTO) {
-        return ResponseEntity.ok(supplierService.createSupplier(supplierDTO));
+    public SupplierDTO createSupplier(@RequestBody SupplierDTO supplierDTO) {
+        return supplierService.createSupplier(supplierDTO);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<SupplierDTO> updateSupplier(@PathVariable Long id, @RequestBody SupplierDTO supplierDTO) {
-        return ResponseEntity.ok(supplierService.updateSupplier(id, supplierDTO));
-    }
-
+    // Delete a supplier by ID
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteSupplier(@PathVariable Long id) {
+    public void deleteSupplier(@PathVariable Long id) {
         supplierService.deleteSupplier(id);
-        return ResponseEntity.noContent().build();
     }
 }

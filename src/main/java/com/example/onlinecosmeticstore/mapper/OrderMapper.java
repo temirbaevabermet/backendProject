@@ -1,37 +1,25 @@
-package com.example.onlinecosmeticstore.mapper;
+package com.example.OnlineCosmeticStore.mapper;
 
-import com.example.onlinecosmeticstore.dto.OrderDTO;
-import com.example.onlinecosmeticstore.Entity.Order;
-import com.example.onlinecosmeticstore.Entity.Product;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
-import org.mapstruct.factory.Mappers;
+import com.example.OnlineCosmeticStore.dto.OrderDTO;
+import com.example.OnlineCosmeticStore.Entity.Order;
 
-import java.util.Set;
 import java.util.stream.Collectors;
 
-@Mapper
-public interface OrderMapper {
-    OrderMapper INSTANCE = Mappers.getMapper(OrderMapper.class);
-
-    @Mapping(source = "products", target = "productIds", qualifiedByName = "mapProductsToIds")
-    OrderDTO toDTO(Order order);
-
-    @Mapping(source = "productIds", target = "products", qualifiedByName = "mapIdsToProducts")
-    Order toEntity(OrderDTO orderDTO);
-
-    @Named("mapProductsToIds")
-    default Set<Long> mapProductsToIds(Set<Product> products) {
-        return products.stream().map(Product::getId).collect(Collectors.toSet());
+public class OrderMapper {
+    public static OrderDTO toDto(Order order) {
+        OrderDTO dto = new OrderDTO();
+        dto.setId(order.getId());
+        dto.setOrderDate(order.getOrderDate());
+        dto.setStatus(order.getStatus());
+        dto.setProductIds(order.getProducts().stream().map(p -> p.getId()).collect(Collectors.toSet()));
+        return dto;
     }
 
-    @Named("mapIdsToProducts")
-    default Set<Product> mapIdsToProducts(Set<Long> productIds) {
-        return productIds.stream().map(id -> {
-            Product product = new Product();
-            product.setId(id);
-            return product;
-        }).collect(Collectors.toSet());
+    public static Order toEntity(OrderDTO dto) {
+        Order order = new Order();
+        order.setId(dto.getId());
+        order.setOrderDate(dto.getOrderDate());
+        order.setStatus(dto.getStatus());
+        return order;
     }
 }

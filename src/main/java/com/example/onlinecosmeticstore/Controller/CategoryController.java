@@ -1,42 +1,38 @@
-package com.example.onlinecosmeticstore.Controller;
+package com.example.OnlineCosmeticStore.Controller;
 
-import com.example.onlinecosmeticstore.Service.CategoryService;
-import com.example.onlinecosmeticstore.dto.CategoryDTO;
+import com.example.OnlineCosmeticStore.Service.CategoryService;
+import com.example.OnlineCosmeticStore.dto.CategoryDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/categories")
-@RequiredArgsConstructor
+@RequestMapping("/api/categories")
 public class CategoryController {
-    private final CategoryService categoryService;
+
+    @Autowired
+    private CategoryService categoryService;
 
     @GetMapping
-    public List<CategoryDTO> getAllCategories() {
+    public List<CategoryDTO> getCategories() {
         return categoryService.getAllCategories();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable Long id) {
-        return ResponseEntity.ok(categoryService.getCategoryById(id));
+    public CategoryDTO getCategory(@PathVariable Long id) {
+        return categoryService.getCategoryById(id);
     }
 
     @PostMapping
-    public ResponseEntity<CategoryDTO> createCategory(@RequestBody CategoryDTO categoryDTO) {
-        return ResponseEntity.ok(categoryService.createCategory(categoryDTO));
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<CategoryDTO> updateCategory(@PathVariable Long id, @RequestBody CategoryDTO categoryDTO) {
-        return ResponseEntity.ok(categoryService.updateCategory(id, categoryDTO));
+    public CategoryDTO createCategory(@RequestBody CategoryDTO categoryDTO) {
+        return categoryService.createCategory(categoryDTO);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
+    public void deleteCategory(@PathVariable Long id) {
         categoryService.deleteCategory(id);
-        return ResponseEntity.noContent().build();
     }
 }

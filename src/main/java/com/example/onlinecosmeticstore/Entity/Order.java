@@ -1,4 +1,4 @@
-package com.example.onlinecosmeticstore.Entity;
+package com.example.OnlineCosmeticStore.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;

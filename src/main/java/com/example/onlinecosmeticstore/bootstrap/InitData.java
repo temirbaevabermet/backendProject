@@ -1,13 +1,13 @@
-package com.example.onlinecosmeticstore.bootstrap;
+package com.example.OnlineCosmeticStore.bootstrap;
 
-import com.example.onlinecosmeticstore.Entity.Category;
-import com.example.onlinecosmeticstore.Entity.Order;
-import com.example.onlinecosmeticstore.Entity.Product;
-import com.example.onlinecosmeticstore.Entity.Supplier;
-import com.example.onlinecosmeticstore.Repository.CategoryRepository;
-import com.example.onlinecosmeticstore.Repository.OrderRepository;
-import com.example.onlinecosmeticstore.Repository.ProductRepository;
-import com.example.onlinecosmeticstore.Repository.SupplierRepository;
+import com.example.OnlineCosmeticStore.Entity.Category;
+import com.example.OnlineCosmeticStore.Entity.Order;
+import com.example.OnlineCosmeticStore.Entity.Product;
+import com.example.OnlineCosmeticStore.Entity.Supplier;
+import com.example.OnlineCosmeticStore.Repository.CategoryRepository;
+import com.example.OnlineCosmeticStore.Repository.OrderRepository;
+import com.example.OnlineCosmeticStore.Repository.ProductRepository;
+import com.example.OnlineCosmeticStore.Repository.SupplierRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;

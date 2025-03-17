@@ -1,14 +1,22 @@
-package com.example.onlinecosmeticstore.mapper;
+package com.example.OnlineCosmeticStore.mapper;
 
-import com.example.onlinecosmeticstore.dto.SupplierDTO;
-import com.example.onlinecosmeticstore.Entity.Supplier;
-import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
+import com.example.OnlineCosmeticStore.dto.SupplierDTO;
+import com.example.OnlineCosmeticStore.Entity.Supplier;
 
-@Mapper
-public interface SupplierMapper {
-    SupplierMapper INSTANCE = Mappers.getMapper(SupplierMapper.class);
+public class SupplierMapper {
+    public static SupplierDTO toDto(Supplier supplier) {
+        SupplierDTO dto = new SupplierDTO();
+        dto.setId(supplier.getId());
+        dto.setName(supplier.getName());
+        dto.setContactInfo(supplier.getContactInfo());
+        return dto;
+    }
 
-    SupplierDTO toDTO(Supplier supplier);
-    Supplier toEntity(SupplierDTO supplierDTO);
+    public static Supplier toEntity(SupplierDTO dto) {
+        Supplier supplier = new Supplier();
+        supplier.setId(dto.getId());
+        supplier.setName(dto.getName());
+        supplier.setContactInfo(dto.getContactInfo());
+        return supplier;
+    }
 }

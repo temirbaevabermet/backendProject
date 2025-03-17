@@ -1,4 +1,5 @@
-package com.example.onlinecosmeticstore.Entity;
+package com.example.OnlineCosmeticStore.Entity;
+
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;

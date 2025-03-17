@@ -1,49 +1,38 @@
-package com.example.onlinecosmeticstore.Service;
+package com.example.OnlineCosmeticStore.Service;
 
-import com.example.onlinecosmeticstore.Entity.Category;
-import com.example.onlinecosmeticstore.Repository.CategoryRepository;
-import com.example.onlinecosmeticstore.dto.CategoryDTO;
-import com.example.onlinecosmeticstore.mapper.CategoryMapper;
+import com.example.OnlineCosmeticStore.Entity.Category;
+import com.example.OnlineCosmeticStore.Repository.CategoryRepository;
+import com.example.OnlineCosmeticStore.dto.CategoryDTO;
+import com.example.OnlineCosmeticStore.mapper.CategoryMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class CategoryService {
-    private final CategoryRepository categoryRepository;
-    private final CategoryMapper categoryMapper = CategoryMapper.INSTANCE;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     public List<CategoryDTO> getAllCategories() {
-        return categoryRepository.findAll()
-                .stream()
-                .map(categoryMapper::toDTO)
+        List<Category> categories = categoryRepository.findAll();
+        return categories.stream()
+                .map(CategoryMapper::toDto)
                 .collect(Collectors.toList());
     }
 
     public CategoryDTO getCategoryById(Long id) {
-        return categoryRepository.findById(id)
-                .map(categoryMapper::toDTO)
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+        Category category = categoryRepository.findById(id).orElseThrow();
+        return CategoryMapper.toDto(category);
     }
 
     public CategoryDTO createCategory(CategoryDTO categoryDTO) {
-        Category category = categoryMapper.toEntity(categoryDTO);
-        category = categoryRepository.save(category);
-        return categoryMapper.toDTO(category);
-    }
-
-    public CategoryDTO updateCategory(Long id, CategoryDTO categoryDTO) {
-        Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Category not found"));
-
-        category.setName(categoryDTO.getName());
-        category.setDescription(categoryDTO.getDescription());
-
-        category = categoryRepository.save(category);
-        return categoryMapper.toDTO(category);
+        Category category = CategoryMapper.toEntity(categoryDTO);
+        Category savedCategory = categoryRepository.save(category);
+        return CategoryMapper.toDto(savedCategory);
     }
 
     public void deleteCategory(Long id) {

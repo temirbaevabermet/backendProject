@@ -1,49 +1,38 @@
-package com.example.onlinecosmeticstore.Service;
+package com.example.OnlineCosmeticStore.Service;
 
-import com.example.onlinecosmeticstore.Entity.Supplier;
-import com.example.onlinecosmeticstore.Repository.SupplierRepository;
-import com.example.onlinecosmeticstore.dto.SupplierDTO;
-import com.example.onlinecosmeticstore.mapper.SupplierMapper;
+import com.example.OnlineCosmeticStore.Entity.Supplier;
+import com.example.OnlineCosmeticStore.Repository.SupplierRepository;
+import com.example.OnlineCosmeticStore.dto.SupplierDTO;
+import com.example.OnlineCosmeticStore.mapper.SupplierMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class SupplierService {
-    private final SupplierRepository supplierRepository;
-    private final SupplierMapper supplierMapper = SupplierMapper.INSTANCE;
+
+    @Autowired
+    private SupplierRepository supplierRepository;
 
     public List<SupplierDTO> getAllSuppliers() {
-        return supplierRepository.findAll()
-                .stream()
-                .map(supplierMapper::toDTO)
+        List<Supplier> suppliers = supplierRepository.findAll();
+        return suppliers.stream()
+                .map(SupplierMapper::toDto)
                 .collect(Collectors.toList());
     }
 
     public SupplierDTO getSupplierById(Long id) {
-        return supplierRepository.findById(id)
-                .map(supplierMapper::toDTO)
-                .orElseThrow(() -> new RuntimeException("Supplier not found"));
+        Supplier supplier = supplierRepository.findById(id).orElseThrow();
+        return SupplierMapper.toDto(supplier);
     }
 
     public SupplierDTO createSupplier(SupplierDTO supplierDTO) {
-        Supplier supplier = supplierMapper.toEntity(supplierDTO);
-        supplier = supplierRepository.save(supplier);
-        return supplierMapper.toDTO(supplier);
-    }
-
-    public SupplierDTO updateSupplier(Long id, SupplierDTO supplierDTO) {
-        Supplier supplier = supplierRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Supplier not found"));
-
-        supplier.setName(supplierDTO.getName());
-        supplier.setContactInfo(supplierDTO.getContactInfo());
-
-        supplier = supplierRepository.save(supplier);
-        return supplierMapper.toDTO(supplier);
+        Supplier supplier = SupplierMapper.toEntity(supplierDTO);
+        Supplier savedSupplier = supplierRepository.save(supplier);
+        return SupplierMapper.toDto(savedSupplier);
     }
 
     public void deleteSupplier(Long id) {

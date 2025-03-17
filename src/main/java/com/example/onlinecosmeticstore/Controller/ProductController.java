@@ -1,42 +1,42 @@
-package com.example.onlinecosmeticstore.Controller;
+package com.example.OnlineCosmeticStore.Controller;
 
-import com.example.onlinecosmeticstore.Service.ProductService;
-import com.example.onlinecosmeticstore.dto.ProductDTO;
+import com.example.OnlineCosmeticStore.Service.ProductService;
+import com.example.OnlineCosmeticStore.dto.ProductDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/products")
-@RequiredArgsConstructor
+@RequestMapping("/api/products")
 public class ProductController {
-    private final ProductService productService;
 
+    @Autowired
+    private ProductService productService;
+
+    // Get all products
     @GetMapping
     public List<ProductDTO> getAllProducts() {
         return productService.getAllProducts();
     }
 
+    // Get a product by ID
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDTO> getProductById(@PathVariable Long id) {
-        return ResponseEntity.ok(productService.getProductById(id));
+    public ProductDTO getProduct(@PathVariable Long id) {
+        return productService.getProductById(id);
     }
 
+    // Create a new product
     @PostMapping
-    public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO productDTO) {
-        return ResponseEntity.ok(productService.createProduct(productDTO));
+    public ProductDTO createProduct(@RequestBody ProductDTO productDTO) {
+        return productService.createProduct(productDTO);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ProductDTO> updateProduct(@PathVariable Long id, @RequestBody ProductDTO productDTO) {
-        return ResponseEntity.ok(productService.updateProduct(id, productDTO));
-    }
-
+    // Delete a product by ID
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+    public void deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
-        return ResponseEntity.noContent().build();
     }
 }
