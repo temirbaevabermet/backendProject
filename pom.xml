@@ -101,6 +101,11 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jsr310</artifactId>
+			<version>2.12.0</version> <!-- Используйте совместимую версию с вашей версией Jackson -->
+		</dependency>
 	</dependencies>
 
 	<build>
