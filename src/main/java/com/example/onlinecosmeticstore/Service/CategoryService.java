@@ -44,13 +44,10 @@ public class CategoryService {
     }
 
     public void deleteCategory(Long id) {
-        // Сначала удалим все продукты, связанные с категорией
         categoryRepository.findById(id).ifPresent(category -> {
-            // Удаление всех продуктов этой категории
             category.getProducts().forEach(product -> productRepository.delete(product));
         });
 
-        // Затем удаляем саму категорию
         categoryRepository.deleteById(id);
     }
 }

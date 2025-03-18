@@ -2,8 +2,6 @@ package com.example.OnlineCosmeticStore.Controller;
 
 import com.example.OnlineCosmeticStore.Service.CategoryService;
 import com.example.OnlineCosmeticStore.dto.CategoryDTO;
-import com.example.OnlineCosmeticStore.dto.OrderDTO;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
