@@ -1,5 +1,7 @@
 package com.example.OnlineCosmeticStore.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,6 +19,10 @@ public class OrderDTO {
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate orderDate;
+
+    @NotNull(message = "Order status cannot be empty")
     private String status;
+
+    @NotEmpty(message = "The product list cannot be empty")
     private Set<Long> productIds;
 }
