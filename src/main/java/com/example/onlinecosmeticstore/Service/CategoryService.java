@@ -2,10 +2,9 @@ package com.example.OnlineCosmeticStore.Service;
 
 import com.example.OnlineCosmeticStore.Entity.Category;
 import com.example.OnlineCosmeticStore.Repository.CategoryRepository;
-import com.example.OnlineCosmeticStore.Repository.ProductRepository;
 import com.example.OnlineCosmeticStore.dto.CategoryDTO;
 import com.example.OnlineCosmeticStore.mapper.CategoryMapper;
-import jakarta.transaction.Transactional;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,13 +15,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
+@RequiredArgsConstructor
 public class CategoryService {
 
-    @Autowired
-    private CategoryRepository categoryRepository;
-    @Autowired
-    private ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
 
     public List<CategoryDTO> getAllCategories() {
         List<Category> categories = categoryRepository.findAll();
@@ -32,22 +28,23 @@ public class CategoryService {
     }
 
     public CategoryDTO getCategoryById(Long id) {
-        Category category = categoryRepository.findById(id).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found"));
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Category not found with ID: " + id));
         return CategoryMapper.toDto(category);
     }
 
     public CategoryDTO createCategory(CategoryDTO categoryDTO) {
+        if (categoryDTO.getName() == null || categoryDTO.getName().isEmpty()) {
+            throw new IllegalArgumentException("Category name cannot be null or empty");
+        }
         Category category = CategoryMapper.toEntity(categoryDTO);
         Category savedCategory = categoryRepository.save(category);
         return CategoryMapper.toDto(savedCategory);
     }
 
     public void deleteCategory(Long id) {
-        categoryRepository.findById(id).ifPresent(category -> {
-            category.getProducts().forEach(product -> productRepository.delete(product));
-        });
-
+        categoryRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Category not found with ID: " + id));
         categoryRepository.deleteById(id);
     }
 }

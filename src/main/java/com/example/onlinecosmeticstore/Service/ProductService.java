@@ -8,6 +8,7 @@ import com.example.OnlineCosmeticStore.Repository.ProductRepository;
 import com.example.OnlineCosmeticStore.Repository.SupplierRepository;
 import com.example.OnlineCosmeticStore.dto.ProductDTO;
 import com.example.OnlineCosmeticStore.mapper.ProductMapper;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,25 +35,26 @@ public class ProductService {
     }
 
     public ProductDTO getProductById(Long id) {
-        Product product = productRepository.findById(id).orElseThrow();
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Product not found with ID: " + id));
         return ProductMapper.toDto(product);
     }
 
     public ProductDTO createProduct(ProductDTO productDTO) {
-        // Загружаем Category по ID (если нет, выбрасываем ошибку)
+
         Category category = categoryRepository.findById(productDTO.getCategoryId())
                 .orElseThrow(() -> new RuntimeException("Category not found"));
 
-        // Загружаем Supplier по ID (если нет, выбрасываем ошибку)
+
         Supplier supplier = supplierRepository.findById(productDTO.getSupplierId())
                 .orElseThrow(() -> new RuntimeException("Supplier not found"));
 
-        // Создаем объект Product и устанавливаем category и supplier
+
         Product product = ProductMapper.toEntity(productDTO);
         product.setCategory(category);
         product.setSupplier(supplier);
 
-        // Сохраняем в базу
+
         Product savedProduct = productRepository.save(product);
 
         return ProductMapper.toDto(savedProduct);

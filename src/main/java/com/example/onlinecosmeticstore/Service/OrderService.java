@@ -4,6 +4,7 @@ import com.example.OnlineCosmeticStore.Entity.Order;
 import com.example.OnlineCosmeticStore.Repository.OrderRepository;
 import com.example.OnlineCosmeticStore.dto.OrderDTO;
 import com.example.OnlineCosmeticStore.mapper.OrderMapper;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +25,8 @@ public class OrderService {
     }
 
     public OrderDTO getOrderById(Long id) {
-        Order order = orderRepository.findById(id).orElseThrow();
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Order not found with ID: " + id));
         return OrderMapper.toDto(order);
     }
 
