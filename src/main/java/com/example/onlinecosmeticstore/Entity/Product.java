@@ -30,7 +30,7 @@ public class Product {
     @JoinColumn(name = "supplier_id", nullable = false)
     private Supplier supplier;
 
-    @ManyToMany(mappedBy = "products")
+    @ManyToMany(mappedBy = "products", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<Order> orders;
 }
