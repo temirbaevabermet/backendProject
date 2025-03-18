@@ -92,7 +92,7 @@ public class ProductControllerIntegrationTest {
     void testGetAllProducts() throws Exception {
         mockMvc.perform(get("/api/products"))
                 .andExpect(status().isOk())  // Ожидаем статус 200
-                .andExpect(jsonPath("$").isArray())  // Ожидаем, что вернется массив
+                .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$[0].name").exists());
     }
 }
