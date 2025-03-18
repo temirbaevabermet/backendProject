@@ -82,23 +82,28 @@ public class CategoryControllerTest {
 
     @Test
     public void testCreateCategory() throws Exception {
-        // Используем builder для создания объекта CategoryDTO
+        // Создаем объект CategoryDTO
         CategoryDTO categoryDTO = CategoryDTO.builder()
                 .name("New Category")
                 .build();
+        // Создаем объект CategoryDTO, который будет возвращен после создания
         CategoryDTO createdCategory = CategoryDTO.builder()
                 .id(1L)
                 .name("New Category")
                 .build();
+
+        // Мокаем поведение сервиса
         when(categoryService.createCategory(any(CategoryDTO.class))).thenReturn(createdCategory);
 
+        // Выполняем запрос и проверяем статус
         mockMvc.perform(post("/api/categories")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(categoryDTO)))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())  // Ожидаем статус 201 Created
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value("New Category"));
 
+        // Проверяем, что метод createCategory был вызван один раз
         verify(categoryService, times(1)).createCategory(any(CategoryDTO.class));
     }
 
@@ -107,7 +112,8 @@ public class CategoryControllerTest {
         doNothing().when(categoryService).deleteCategory(anyLong());
 
         mockMvc.perform(delete("/api/categories/{id}", 1L))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent())  // Ожидаем статус 204 No Content
+                .andExpect(content().string(""));
 
         verify(categoryService, times(1)).deleteCategory(anyLong());
     }

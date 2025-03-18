@@ -37,7 +37,7 @@ public class InitData {
     public void init() {
 
         // Создание категорий
-        Category makeup = Category.builder().name("Makeup").description("Beauty products").build();
+        Category makeup = Category.builder().name("Hair Care").description("Beauty products").build();
         Category skincare = Category.builder().name("Skincare").description("Facial care").build();
 
         categoryRepository.saveAll(List.of(makeup, skincare));
