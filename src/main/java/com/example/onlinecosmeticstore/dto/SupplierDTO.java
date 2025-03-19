@@ -17,6 +17,6 @@ public class SupplierDTO {
     @NotNull(message = "Supplier name cannot be empty")
     private String name;
 
-    @Email(message = "Invalid email format")
+    @Email(message = "Invalid contact format")
     private String contactInfo;
 }
