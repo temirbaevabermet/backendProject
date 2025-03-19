@@ -16,8 +16,8 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class ProductDTO {
     private Long id;
-    @NotNull(message = "Название продукта не может быть пустым")
-    @Size(min = 3, max = 100, message = "Название продукта должно быть между 3 и 100 символами")
+    @NotNull(message = "Product name cannot be empty")
+    @Size(min = 3, max = 100, message = "Product name must be between 3 and 100 characters")
     private String name;
 
     private String description;
