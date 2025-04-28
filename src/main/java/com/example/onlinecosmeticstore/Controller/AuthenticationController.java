@@ -1,9 +1,12 @@
 package com.example.OnlineCosmeticStore.Controller;
 
+import com.example.OnlineCosmeticStore.Entity.RefreshToken;
 import com.example.OnlineCosmeticStore.Entity.Role;
 import com.example.OnlineCosmeticStore.Entity.User;
+import com.example.OnlineCosmeticStore.Repository.RefreshTokenRepository;
 import com.example.OnlineCosmeticStore.Repository.UserRepository;
 import com.example.OnlineCosmeticStore.Security.JwtUtils;
+import com.example.OnlineCosmeticStore.Service.RefreshTokenService;
 import com.example.OnlineCosmeticStore.dto.LoginRequest;
 import com.example.OnlineCosmeticStore.dto.RegisterRequest;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +25,8 @@ public class AuthenticationController {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
+    private final RefreshTokenService refreshTokenService;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
@@ -51,10 +56,29 @@ public class AuthenticationController {
             return ResponseEntity.badRequest().body("Invalid password");
         }
 
-        String token = jwtUtils.generateJwtToken(user.getEmail());
+        String accessToken = jwtUtils.generateJwtToken(user.getEmail());
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getId());
 
         Map<String, String> response = new HashMap<>();
-        response.put("accessToken", token);
+        response.put("accessToken", accessToken);
+        response.put("refreshToken", refreshToken.getToken());
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<?> refreshToken(@RequestBody TokenRefreshRequest request) {
+        String requestRefreshToken = request.getRefreshToken();
+
+        return refreshTokenRepository.findByToken(requestRefreshToken)
+                .map(refreshTokenService::verifyExpiration)
+                .map(RefreshToken::getUser)
+                .map(user -> {
+                    String token = jwtUtils.generateJwtToken(user.getEmail());
+                    Map<String, String> response = new HashMap<>();
+                    response.put("accessToken", token);
+                    response.put("refreshToken", requestRefreshToken);
+                    return ResponseEntity.ok(response);
+                })
+                .orElseThrow(() -> new RuntimeException("Refresh token is not in database!"));
     }
 }

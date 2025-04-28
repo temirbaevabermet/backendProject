@@ -42,7 +42,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email; // используем email как username
+        return username; // используем email как username
     }
 
     @Override
