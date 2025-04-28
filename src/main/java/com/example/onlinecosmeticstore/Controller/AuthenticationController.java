@@ -9,6 +9,7 @@ import com.example.OnlineCosmeticStore.Security.JwtUtils;
 import com.example.OnlineCosmeticStore.Service.RefreshTokenService;
 import com.example.OnlineCosmeticStore.dto.LoginRequest;
 import com.example.OnlineCosmeticStore.dto.RegisterRequest;
+import com.example.OnlineCosmeticStore.dto.TokenRefreshRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
