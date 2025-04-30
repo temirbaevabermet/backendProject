@@ -43,6 +43,12 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .formLogin(form -> form
+                        .permitAll()
+                )
+                .logout(logout -> logout
+                        .permitAll()
+                )
                 .build();
     }
 
