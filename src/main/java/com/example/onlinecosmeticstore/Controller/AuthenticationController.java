@@ -39,7 +39,7 @@ public class AuthenticationController {
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.CUSTOMER)
-                .enabled(false) // Нужно подтвердить почту
+                .enabled(true) // Нужно подтвердить почту
                 .build();
         userRepository.save(user);
 
