@@ -57,7 +57,7 @@ public class AuthenticationController {
             return ResponseEntity.badRequest().body("Invalid password");
         }
 
-        String accessToken = jwtUtils.generateJwtToken(user.getEmail());
+        String accessToken = jwtUtils.generateJwtToken(user.getUsername());
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getId());
 
         Map<String, String> response = new HashMap<>();

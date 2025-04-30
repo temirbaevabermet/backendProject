@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -22,6 +23,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final JwtAuthFilter jwtAuthFilter;
     private final UserRepository userRepository;
 
     @Bean
@@ -29,27 +31,17 @@ public class SecurityConfig {
         return http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/register", "/api/auth/login").permitAll()  // Разрешить доступ к регистрации и логину
+                        .requestMatchers("/api/auth/register", "/api/auth/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/products/**", "/api/categories/**").hasAnyRole("CUSTOMER", "EMPLOYEE")
                         .requestMatchers(HttpMethod.POST, "/api/products/**", "/api/categories/**", "/api/suppliers/**").hasRole("EMPLOYEE")
                         .requestMatchers(HttpMethod.DELETE, "/api/products/**", "/api/categories/**", "/api/suppliers/**").hasRole("EMPLOYEE")
                         .requestMatchers("/api/orders/**").hasRole("SUPPLIER")
                         .anyRequest().authenticated()
                 )
-                .formLogin(form -> form
-                        .permitAll()
-                )
-                .logout(logout -> logout
-                        .permitAll()
-                )
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return username -> userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
