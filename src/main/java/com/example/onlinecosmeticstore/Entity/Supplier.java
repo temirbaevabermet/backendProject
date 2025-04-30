@@ -6,22 +6,24 @@ import lombok.*;
 
 import java.util.Set;
 
-@Entity
-@Data
-@Builder
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@ToString(exclude = {"products"})
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Entity
 public class Supplier {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
 
     private String name;
-
     private String contactInfo;
+
     @OneToMany(mappedBy = "supplier")
     @JsonIgnore
     private Set<Product> products;
-
 }

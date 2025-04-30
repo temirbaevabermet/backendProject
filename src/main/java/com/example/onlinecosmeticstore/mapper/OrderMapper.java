@@ -3,6 +3,7 @@ package com.example.OnlineCosmeticStore.mapper;
 import com.example.OnlineCosmeticStore.dto.OrderDTO;
 import com.example.OnlineCosmeticStore.Entity.Order;
 
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class OrderMapper {
@@ -11,7 +12,14 @@ public class OrderMapper {
         dto.setId(order.getId());
         dto.setOrderDate(order.getOrderDate());
         dto.setStatus(order.getStatus());
-        dto.setProductIds(order.getProducts().stream().map(p -> p.getId()).collect(Collectors.toSet()));
+
+        // ЗАЩИТА ОТ NULL
+        dto.setProductIds(order.getProducts() == null ?
+                Set.of() :
+                order.getProducts().stream()
+                        .map(p -> p.getId())
+                        .collect(Collectors.toSet()));
+
         return dto;
     }
 
