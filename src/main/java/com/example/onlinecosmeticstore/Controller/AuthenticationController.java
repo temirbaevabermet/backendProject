@@ -10,6 +10,9 @@ import com.example.OnlineCosmeticStore.Service.RefreshTokenService;
 import com.example.OnlineCosmeticStore.dto.LoginRequest;
 import com.example.OnlineCosmeticStore.dto.RegisterRequest;
 import com.example.OnlineCosmeticStore.dto.TokenRefreshRequest;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 
+@Tag(name = "Authentication", description = "Handles user login, registration and token refresh")
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -29,6 +33,8 @@ public class AuthenticationController {
     private final RefreshTokenService refreshTokenService;
     private final RefreshTokenRepository refreshTokenRepository;
 
+    @Operation(summary = "User registration", description = "Register a new user")
+    @ApiResponse(responseCode = "200", description = "User registered successfully")
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
         if (userRepository.existsByUsername(request.getEmail())) {
@@ -48,6 +54,8 @@ public class AuthenticationController {
         return ResponseEntity.ok("User registered successfully. Please verify your email.");
     }
 
+    @Operation(summary = "User login", description = "Authenticate and return JWT tokens")
+    @ApiResponse(responseCode = "200", description = "Authentication successful")
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         User user = userRepository.findByUsername(request.getUsername())
@@ -66,6 +74,8 @@ public class AuthenticationController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "Refresh access token", description = "Use refresh token to get new access token")
+    @ApiResponse(responseCode = "200", description = "Token refreshed")
     @PostMapping("/refresh-token")
     public ResponseEntity<?> refreshToken(@RequestBody TokenRefreshRequest request) {
         String requestRefreshToken = request.getRefreshToken();
