@@ -6,71 +6,143 @@ The purpose of this document is to specify the requirements for the backend syst
 
 The Online Cosmetic Store will manage products, orders, and suppliers in the domain of cosmetics. Key features include managing product details, categorizing products, associating products with suppliers, and tracking orders with multiple products.
 
-## 2. Database
-The application is configured to use **H2** as the default database profile, with **PostgreSQL** as an alternate profile. Both databases are supported for different environments (development and production).
 
+# Online Cosmetic Store – Authentication & Security Setup
 
-# 🛡️ Authentication & Authorization Overview
-
-The **Online Cosmetic Store Backend** uses a robust authentication and authorization system powered by **Spring Security** and **JWT tokens**. It supports both **email/password login** and **OAuth2 providers** (like Google or GitHub,Facebook). Upon successful login, users receive an **access token** and a **refresh token** for secure API interaction.
+This document provides an overview of the authentication and security mechanisms implemented in the **Online Cosmetic Store** application, as well as instructions for testing the setup.
 
 ---
 
-## 👤 User Roles
+## 🔐 Security Overview
 
-The system defines **three roles** with different permissions:
+The application uses **Spring Security** with the following features:
 
-| Role      | Description                                  | Permissions                          |
-|-----------|----------------------------------------------|--------------------------------------|
-| `CUSTOMER` | End users who browse and purchase products   | View products and categories         |
-| `EMPLOYEE` | Admins responsible for managing the store    | Create, update, delete catalog data  |
-| `SUPPLIER` | Partners handling orders and logistics       | Access and manage assigned orders    |
+### 1. **JWT Authentication**
+- **Login**: Users receive an **access token** (valid for 1 hour) and a **refresh token** (valid for 7 days).
+- **Token Refresh**: A refresh token can be used to request a new access token without re-authenticating.
 
----
+### 2. **OAuth2 Login**
+- OAuth2 login is supported via:
+  - **Google**
+  - **GitHub**
+  - **Facebook**
+- On first login, a user is registered with a default `CUSTOMER` role.
+- A JWT token is generated on successful OAuth login and returned in the response.
 
-## 🔐 Authentication Endpoints
+### 3. **Role-Based Access Control**
+- **CUSTOMER** and **EMPLOYEE** roles can view products and categories.
+- **EMPLOYEE** can manage products, categories, and suppliers.
+- **SUPPLIER** has access to order-related APIs.
+- `/api/auth/**` and `/h2-console/**` are publicly accessible.
 
-| Endpoint                | Method | Description                           | Access Level |
-|-------------------------|--------|---------------------------------------|--------------|
-| `/api/auth/register`    | POST   | Register a new user (default: CUSTOMER) | Public       |
-| `/api/auth/login`       | POST   | Authenticate and receive JWT tokens   | Public       |
-| `/api/auth/refresh-token` | POST | Obtain new access token using refresh token | Public |
-| `/oauth2/**`            | GET    | OAuth2 login routes (e.g., Google)    | Public       |
-
----
-
-## 📌 Role-Based API Access
-
-| Endpoint                                             | Methods        | Roles Allowed          | Description                     |
-|------------------------------------------------------|----------------|-------------------------|---------------------------------|
-| `/api/products/**`, `/api/categories/**`            | `GET`          | CUSTOMER, EMPLOYEE      | View products and categories    |
-| `/api/products/**`, `/api/categories/**`, `/api/suppliers/**` | `POST`, `DELETE` | EMPLOYEE                | Manage products, categories, and suppliers |
-| `/api/orders/**`                                     | ALL            | SUPPLIER                | View and manage orders          |
+### 4. **Custom Filters**
+- `JwtAuthFilter` processes JWTs in `Authorization` headers.
+- Security context is populated for authenticated users.
 
 ---
 
-## 🔁 Token Lifecycle
+## 📦 Endpoints Summary
 
-- After successful login, the system returns:
-  - `accessToken`: Short-lived JWT token for authorization
-  - `refreshToken`: Long-lived token for refreshing access tokens
-
- ---
- 
- ## 🌐 OAuth2 Login Support
-
-- Users can log in via OAuth2 (e.g., **Google**).
-- If the user does not already exist in the system, they are **automatically registered** as a `CUSTOMER`.
+| Endpoint | Method | Access | Description |
+|----------|--------|--------|-------------|
+| `/api/auth/register` | POST | Public | Register a new user |
+| `/api/auth/login` | POST | Public | Authenticate with username & password |
+| `/api/auth/refresh-token` | POST | Public | Obtain a new access token |
+| `/oauth2/**` | GET | Public | OAuth2 login endpoints |
+| `/api/products/**` | GET | Authenticated (CUSTOMER, EMPLOYEE) | View products |
+| `/api/products/**` | POST/DELETE | Authenticated (EMPLOYEE) | Manage products |
+| `/api/orders/**` | Any | Authenticated (SUPPLIER) | Manage orders |
 
 ---
 
-## 🚫 Access Control Behavior
+## 🧪 Testing the Authentication System
 
-- Requests without proper authentication or authorization will receive:
-  - `401 Unauthorized` – When the token is missing or invalid.
-  - `403 Forbidden` – When the authenticated user lacks sufficient permissions.
+### 🔧 Requirements
+- Java 17+
+- Spring Boot
+- PostgreSQL or H2
+- Postman or similar tool for API testing
 
-> 🔒 Access is controlled via Spring Security filters and role-based method annotations.
+### ✅ Register User
+```http
+POST /api/auth/register
+Content-Type: application/json
+
+{
+  "username": "johndoe",
+  "email": "john@example.com",
+  "password": "password123"
+}
+```
+
+### 🔐 Login
+```http
+POST /api/auth/login
+Content-Type: application/json
+
+{
+  "username": "johndoe",
+  "password": "password123"
+}
+```
+✅ Returns:
+```json
+{
+  "accessToken": "JWT_TOKEN",
+  "refreshToken": "REFRESH_TOKEN"
+}
+```
+
+### 🔄 Refresh Token
+```http
+POST /api/auth/refresh-token
+Content-Type: application/json
+
+{
+  "refreshToken": "REFRESH_TOKEN"
+}
+```
+
+### 🔗 OAuth2 Login
+Visit one of the following URLs to initiate login:
+- `http://localhost:8080/oauth2/authorization/google`
+- `http://localhost:8080/oauth2/authorization/github`
+- `http://localhost:8080/oauth2/authorization/facebook`
+
+On success, a JWT token will be returned in the response.
+
+---
+
+
+## 🔧 Configuration Highlights
+
+### application.properties
+```properties
+jwt.secret=...           # Long secret key
+jwt.expirationMs=3600000
+jwt.refreshExpirationMs=604800000
+
+spring.security.oauth2.client.registration.google.client-id=...
+spring.security.oauth2.client.registration.google.client-secret=...
+
+spring.security.oauth2.client.registration.github.client-id=...
+spring.security.oauth2.client.registration.github.client-secret=...
+
+spring.security.oauth2.client.registration.facebook.client-id=...
+spring.security.oauth2.client.registration.facebook.client-secret=...
+```
+
+
+---
+
+## 📁 Project Modules Related to Security
+
+- `AuthenticationController`: REST endpoints for login, register, and token refresh.
+- `JwtUtils`: JWT creation and validation logic.
+- `JwtAuthFilter`: JWT filter for authorization.
+- `CustomOAuth2UserService`: Handles user info from OAuth providers.
+- `OAuth2LoginSuccessHandler`: Returns token on successful OAuth login.
+- `SecurityConfig`: Configures Spring Security.
 
 ---
 
@@ -90,3 +162,6 @@ You can access helpful developer tools via the following URLs:
 ---
 
 > 🛠️ These tools are useful for debugging, testing, and understanding the available API endpoints.
+
+## 📫 Contact
+For questions or contributions, please contact +996 555829994;
